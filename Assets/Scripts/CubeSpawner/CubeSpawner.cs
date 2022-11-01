@@ -4,7 +4,7 @@ using UnityEngine;
 public class CubeSpawner : MonoBehaviour
 {
     [SerializeField] private Cube _cubePrefab;
-    public bool _stopSpawn = false;
+    public bool _playSpawn;
 
     private float _spawnDuration;
     private float _speedValue;
@@ -28,20 +28,20 @@ public class CubeSpawner : MonoBehaviour
         UIEvents.OnChangeSpawnDurationTime.AddListener(ChangeSpawnDurationTime);
         UIEvents.OnChangeSpeedValue.AddListener(ChangeSpeedValue);
         UIEvents.OnChangeMaxDistantionValue.AddListener(ChangeMaxDistantionValue);
-
-        StartCoroutine(SpawnCubes());
+        UIEvents.OnChangeGameState.AddListener(SetPlaySpawn);
     }
-
 
     private IEnumerator SpawnCubes()
     {
-        while (!_stopSpawn)
+        while (_playSpawn)
         {
             Cube newCube = Instantiate(_cubePrefab, CachedTransform.position, Quaternion.identity);
             newCube.MoveCube(_speedValue, _maxDistantion);
             yield return new WaitForSeconds(_spawnDuration);
             yield return null;
         }
+
+        yield break;
     }
 
     private void ChangeSpawnDurationTime(float value)
@@ -57,5 +57,13 @@ public class CubeSpawner : MonoBehaviour
     private void ChangeMaxDistantionValue(float value)
     {
         _maxDistantion = value;
+    }
+
+    private void SetPlaySpawn(bool isPlay)
+    {
+        _playSpawn = isPlay;
+
+        if (_playSpawn)
+            StartCoroutine(SpawnCubes());
     }
 }

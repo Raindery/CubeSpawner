@@ -20,10 +20,10 @@ public class Cube : MonoBehaviour
     }
     private IEnumerator MoveCubeCoroutine(float moveSpeedValue, float maxMoveDistance)
     {
-        Vector3 newPosition;
+        Vector3 newPosition = CachedTransform.position;
         while (CachedTransform.position.z != maxMoveDistance)
         {
-            newPosition = Vector3.forward * Mathf.Clamp(CachedTransform.position.z + moveSpeedValue * Time.deltaTime, 0, maxMoveDistance);
+            newPosition.z = Mathf.Clamp(CachedTransform.position.z + moveSpeedValue * Time.deltaTime, 0, maxMoveDistance);
             CachedTransform.position = newPosition;
 
             yield return null;
